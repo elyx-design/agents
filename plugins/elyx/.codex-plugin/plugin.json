@@ -1,0 +1,36 @@
+{
+  "name": "elyx",
+  "version": "0.1.0",
+  "description": "Guidance for agents working with .elyx design files.",
+  "author": {
+    "name": "Elyx",
+    "email": "team@elyx.design",
+    "url": "https://elyx.design"
+  },
+  "homepage": "https://elyx.design",
+  "repository": "https://github.com/elyx-design/agents.git",
+  "keywords": [
+    "elyx",
+    "design",
+    "ui",
+    "skills",
+    "cli"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Elyx",
+    "shortDescription": "Guidance for .elyx files.",
+    "longDescription": "Elyx is a design tool with local, AI-friendly .elyx files. This plugin teaches Codex how to work with Elyx using the `elyx` CLI.",
+    "developerName": "Elyx",
+    "category": "Design",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://elyx.design",
+    "defaultPrompt": [
+      "Inspect this Elyx design and explain its resolved structure.",
+      "Update this Elyx design and verify the result."
+    ]
+  }
+}

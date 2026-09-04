@@ -1,0 +1,20 @@
+{
+  "name": "elyx",
+  "interface": {
+    "displayName": "Elyx"
+  },
+  "plugins": [
+    {
+      "name": "elyx",
+      "source": {
+        "source": "local",
+        "path": "./plugins/elyx"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Design"
+    }
+  ]
+}

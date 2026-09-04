@@ -1,0 +1,19 @@
+{
+  "name": "elyx",
+  "version": "0.1.0",
+  "description": "Guidance for agents working with .elyx design files.",
+  "author": {
+    "name": "Elyx",
+    "email": "team@elyx.design"
+  },
+  "homepage": "https://elyx.design",
+  "repository": "https://github.com/elyx-design/agents",
+  "keywords": [
+    "elyx",
+    "design",
+    "ui",
+    "skills",
+    "cli"
+  ],
+  "skills": "./skills"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "elyx",
+  "owner": {
+    "name": "Elyx",
+    "email": "team@elyx.design"
+  },
+  "description": "Agent guidance for working with Elyx design files.",
+  "plugins": [
+    {
+      "name": "elyx",
+      "source": "./plugins/elyx",
+      "description": "Guidance for agents working with .elyx design files."
+    }
+  ]
+}
