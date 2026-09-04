@@ -1,18 +1,21 @@
 # Elyx for External Agents
 
-This repository houses the Elyx skill for use with the Claude and Codex plugin systems, as well
-as other agents that support the [Agent Skills](https://github.com/vercel-labs/skills) format.
+This repository houses the Elyx skill for use with the Claude and Codex plugin
+systems, as well as other agents that support the
+[Agent Skills](https://github.com/vercel-labs/skills) format.
 
 The skill teaches an agent how to inspect, author, validate and render `.elyx`
 files. It uses the public
 [`@elyx-design/cli`](https://www.npmjs.com/package/@elyx-design/cli) package as
 its runtime.
 
-## Intergrations
+## Integrations
 
 ### ChatGPT/Codex
 
-The Elyx skill can be installed as a [plugin](https://learn.chatgpt.com/docs/plugins?surface=app) via the desktop app, or via the command line
+The Elyx skill can be installed as a
+[plugin](https://learn.chatgpt.com/docs/plugins?surface=app) through the desktop
+app or from the command line:
 
 ```sh
 codex plugin marketplace add elyx-design/agents
@@ -35,12 +38,14 @@ The Elyx skill can also be installed through the third-party
 npx skills add elyx-design/agents --skill elyx
 ```
 
-> The installer will detect supported agents and provides an installation wizard. See the
-> [Agent Skills](https://github.com/vercel-labs/skills) documentation for more.
+> The installer detects supported agents and provides an installation wizard.
+> See the [Agent Skills](https://github.com/vercel-labs/skills) documentation
+> for more.
 
 ## CLI
 
-You can install the CLI globally using npm (or any npm registry compatible package manager) and so prepare for your agent, or to use it yourself:
+Install the CLI globally with npm or another npm registry-compatible package
+manager. This makes `elyx` available to your agent and for direct use:
 
 ```sh
 npm install --global @elyx-design/cli
