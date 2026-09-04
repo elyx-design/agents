@@ -1,48 +1,51 @@
-# Elyx for Agents
+# Elyx for External Agents
 
-Agent guidance for working with Elyx design files. This repository packages the
-same Elyx skill for the official Claude Code and Codex plugin systems, as well
-as other agents that support the open Agent Skills format.
+This repository houses the Elyx skill for use with the Claude and Codex plugin systems, as well
+as other agents that support the [Agent Skills](https://github.com/vercel-labs/skills) format.
 
-The skill teaches an agent how to inspect, author, validate, and render `.elyx`
+The skill teaches an agent how to inspect, author, validate and render `.elyx`
 files. It uses the public
 [`@elyx-design/cli`](https://www.npmjs.com/package/@elyx-design/cli) package as
 its runtime.
 
-## Claude Code
+## Intergrations
 
-```sh
-claude plugin marketplace add elyx-design/agents
-claude plugin install elyx@elyx
-```
+### ChatGPT/Codex
 
-## Codex
+The Elyx skill can be installed as a [plugin](https://learn.chatgpt.com/docs/plugins?surface=app) via the desktop app, or via the command line
 
 ```sh
 codex plugin marketplace add elyx-design/agents
 codex plugin add elyx@elyx
 ```
 
-## Other agents
+### Claude Code
+
+```sh
+claude plugin marketplace add elyx-design/agents
+claude plugin install elyx@elyx
+```
+
+### Others
 
 The Elyx skill can also be installed through the third-party
-[`skills`](https://github.com/vercel-labs/skills) CLI:
+[Agent Skills](https://github.com/vercel-labs/skills) CLI:
 
 ```sh
 npx skills add elyx-design/agents --skill elyx
 ```
 
+> The installer will detect supported agents and provides an installation wizard. See the
+> [Agent Skills](https://github.com/vercel-labs/skills) documentation for more.
+
 ## CLI
 
-Install the CLI globally and confirm that `elyx` is available on your `PATH`:
+You can install the CLI globally using npm (or any npm registry compatible package manager) and so prepare for your agent, or to use it yourself:
 
 ```sh
 npm install --global @elyx-design/cli
 elyx --help
 ```
-
-The installer will detect supported agents or let you choose a target. See the
-`skills` documentation for global and non-interactive installation options.
 
 ## How it works
 
@@ -54,16 +57,3 @@ uses.
 The skill deliberately avoids project-specific conventions. Projects should
 provide those through their own `README.md`, `AGENTS.md`, local skills, or user
 prompts.
-
-## Repository layout
-
-```text
-.agents/plugins/marketplace.json
-.claude-plugin/marketplace.json
-plugins/elyx/
-  .claude-plugin/plugin.json
-  .codex-plugin/plugin.json
-  skills/elyx/SKILL.md
-```
-
-The shared public guidance lives in `plugins/elyx/skills/elyx/SKILL.md`.
