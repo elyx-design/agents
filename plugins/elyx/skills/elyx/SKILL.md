@@ -65,11 +65,14 @@ The project usually already contains a design system and established file vocabu
 
 ### 2. Author
 
-Prefer composition over raw recreation. Import and instantiate existing components rather than rebuilding raw layers. Use `elyx man components`, `elyx man instance`, `elyx man variants`, and `elyx man slots` to learn component composition and override semantics.
+Prefer composition over raw recreation. Import and instantiate existing components rather than rebuilding raw layers.
+Use `elyx man project-structure` to learn how Elyx projects are organised.
+Use `elyx man components`, `elyx man instance`, `elyx man variants`, and `elyx man slots` to learn component composition and override semantics.
 
 When adding or changing structure:
 
 - prefer importing shared components, tokens, and blocks
+- prefer stacks and `.auto` sizing for normal interface layout: `elyx man frame.layout`
 - keep overrides local and intentional
 - use `inspect` to read resolved structure and geometry before reasoning about instances or overrides
 
