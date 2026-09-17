@@ -1,7 +1,7 @@
 # Elyx for External Agents
 
-This repository houses the Elyx skill for use with the Claude and Codex plugin
-systems, as well as other agents that support the
+This repository houses the Elyx skill for use with the Claude, Codex and Cursor
+plugin systems, as well as other agents that support the
 [Agent Skills](https://github.com/vercel-labs/skills) format.
 
 The skill teaches an agent how to inspect, author, validate and render `.elyx`
@@ -28,6 +28,17 @@ codex plugin add elyx@elyx
 claude plugin marketplace add elyx-design/agents
 claude plugin install elyx@elyx
 ```
+
+### Cursor
+
+In Cursor, open **Customize**, choose **From GitHub Repository**, and import
+`https://github.com/elyx-design/agents`. Install the Elyx plugin from the imported
+marketplace, choosing a project or user scope.
+
+The plugin uses the same skill as the Claude and Codex integrations. Install the
+Elyx CLI separately using the [CLI instructions](#cli) below.
+
+See the [Cursor plugin documentation](https://cursor.com/docs/plugins) for more.
 
 ### Others
 
