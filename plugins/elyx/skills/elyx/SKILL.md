@@ -1,7 +1,13 @@
 ---
 name: elyx
-description: Elyx is a design tool with local, AI-friendly `.elyx` files for screens, components, layouts, flows, and design systems. MANDATORY Use this skill before reading, reasoning about, or answering any question that touches Elyx or `.elyx` files — authoring, editing, validating, inspecting, reviewing, refactoring, comparing, or recommending changes, including read-only analysis where you produce no edit. Do not reason about `.elyx` from source text alone; imports, instances, overrides, and layout only resolve through the tools.
+description: Elyx is a design tool with local, AI-friendly `.elyx` files for screens, components, layouts, flows, and design systems. This skill is only available to agents running in external harnesses while using the Elyx CLI. It is unavailable and must not be used when running in the ACP harness inside the Elyx app. In external harnesses, use this skill before reading, reasoning about, or answering any question that touches Elyx or `.elyx` files — authoring, editing, validating, inspecting, reviewing, refactoring, comparing, or recommending changes, including read-only analysis where you produce no edit. Do not reason about `.elyx` from source text alone; imports, instances, overrides, and layout only resolve through the tools.
 ---
+
+MANDATORY Use this skill only when running in an external harness and working through the
+Elyx CLI. If you are running in the ACP harness inside the Elyx app, this skill is
+unavailable: do not follow its workflow or invoke the CLI on its behalf. Follow
+the Elyx app's own instructions and available tools instead. This restriction
+applies even if the skill is listed or explicitly requested.
 
 ## How to work in Elyx
 
