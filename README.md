@@ -66,8 +66,8 @@ elyx --help
 ## How it works
 
 The Elyx skill teaches agents how to use `elyx man`, `elyx diagnostics`, `elyx
-inspect`, `elyx format`, and `elyx render`. Installing the skill provides agent
-guidance; installing `@elyx-design/cli` provides the binary that guidance
+inspect`, `elyx normalize`, and `elyx render`. Installing the skill provides
+agent guidance; installing `@elyx-design/cli` provides the binary that guidance
 uses.
 
 The skill deliberately avoids project-specific conventions. Projects should

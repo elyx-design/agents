@@ -85,11 +85,14 @@ When adding or changing structure:
 ### 3. Check
 
 ```bash
+elyx normalize -w path/to/file.elyx  # normalize edited source in place
 elyx diagnostics path/to/file.elyx   # JSON report; no target = scan the project
-elyx format -w path/to/file.elyx     # format in place
 ```
 
-Run diagnostics and formatting after edits. If the task is broader than one file, run the smallest meaningful scope that still checks the changed area.
+Run normalization after edits, then diagnostics. If `normalize` reports that it
+fell back to syntax-only formatting, mention that app-style normalization was not
+applied. If the task is broader than one file, run the smallest meaningful scope
+that still checks the changed area.
 
 Use `--editor-only` only to reproduce the diagnostics currently displayed in the editor or to isolate parser, evaluation, and import failures. It excludes validation lint and is not suitable for final validation. Final validation must use full diagnostics and resolve or explicitly account for every warning.
 
