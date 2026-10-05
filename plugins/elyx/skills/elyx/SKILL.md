@@ -76,6 +76,22 @@ When adding or changing structure:
 - keep overrides local and intentional
 - use `inspect` to read resolved structure and geometry before reasoning about instances or overrides
 
+#### Canvas spacing
+
+When placing separate screens, frames, or component examples on a board, leave
+at least 48px of edge-to-edge space between adjacent items. Aim for a gap of at
+least 20% of the larger adjacent item’s size along the spacing direction: width
+for side-by-side items, height for vertically arranged items. For example, two
+1920px-wide screens placed side by side should have roughly 384px or more
+between them, rather than just 48px.
+
+The 20% target is a layout guideline, not a rigid constraint. Keep spacing
+consistent within groups and leave room for frame titles. Use resolved bounds
+from `elyx inspect` to check gaps and `elyx render` to review the arrangement.
+This guidance is for separation between distinct canvas items, not padding or
+gaps inside a screen or component, or intentional overlaps. Do not re-space
+unrelated existing content unless asked.
+
 ### 3. Check
 
 ```bash
