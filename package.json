@@ -1,0 +1,7 @@
+{
+  "name": "@elyx-design/agents",
+  "version": "0.1.4",
+  "private": true,
+  "description": "Elyx skills and plugins for coding agents.",
+  "license": "MIT"
+}
