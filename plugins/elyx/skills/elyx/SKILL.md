@@ -15,37 +15,35 @@ npm install --global @elyx-design/cli
 ```
 
 Run `elyx --help` or `elyx <subcommand> --help` for the authoritative flags.
+`find`, `tree`, and `render --ref` need a recent `@elyx-design/cli`; earlier
+versions provide these as `elyx inspect` and `render --symbol`.
 
-### Use `inspect` to see the resolved scene
+### Use `find` and `tree` to see the resolved scene
 
-Use `inspect` to understand the resolved scene after imports, instances, overrides, layout, and geometry have settled.
+Use `find` and `tree` to understand the resolved scene after imports, instances, overrides, layout, and geometry have settled.
 
-- `bounds`: resolve one exact layer ref to final layer data and bounds.
-  `elyx inspect bounds path/to/file.elyx --ref ctaButton`
+- `find --ref`: resolve one exact layer ref to final layer data and bounds.
+  `elyx find path/to/file.elyx --ref ctaButton`
 
-- `hit`: find the topmost rendered layer at a board-space point.
-  `elyx inspect hit path/to/file.elyx --x 420 --y 180`
+- `find --at`: find the topmost rendered layer at a board-space point.
+  `elyx find path/to/file.elyx --at 420,180`
 
-- `rect`: find layers intersecting or contained within a board-space rectangle.
-  `elyx inspect rect path/to/file.elyx --x 0 --y 0 --width 800 --height 600`
-  `elyx inspect rect path/to/file.elyx --x 0 --y 0 --width 800 --height 600 --mode contain --click-through`
+- `find --in`: find layers intersecting or contained within a board-space rectangle.
+  `elyx find path/to/file.elyx --in 0,0,800,600`
+  `elyx find path/to/file.elyx --in 0,0,800,600 --contain --click-through`
 
-- `component`: resolve one internal source ref into a semantic component tree with children, instance source references, layout, position, constraints, text, and style.
-  `elyx inspect component path/to/file.elyx --ref OnboardingWelcome`
-  `elyx inspect component path/to/file.elyx --ref OnboardingWelcome --depth full`
-
-- `xray`: explain settled X-ray classifications, source counterparts, diff operations, target resolution, and hidden-overlay suppression. By default it returns locally edited and locally introduced layers. Add `--all` for inherited and standalone layers, or `--ref` to scope the traversal to one exact current-file layer ref.
-  `elyx inspect xray path/to/file.elyx`
-  `elyx inspect xray path/to/file.elyx --ref CardInstance --all`
+- `tree`: resolve a file, or one internal source ref, into a semantic layer tree with children, instance source references, layout, position, constraints, text, and style.
+  `elyx tree path/to/file.elyx --ref OnboardingWelcome`
+  `elyx tree path/to/file.elyx --ref OnboardingWelcome --depth full`
 
 Key semantics:
 
 - `localBounds` are layer-local geometry; `absoluteBounds` are board-space geometry.
-- In `component` output, `position` is resolved local placement; `constraints` are stored layout-driving values.
-- `instanceOf` identifies the source file and symbol for an instance.
-- Slot nodes include `slot: true` and a `restrictChildren` boolean; non-slot nodes omit both fields.
+- In `tree` output, `position` is resolved local placement; `constraints` are stored layout-driving values.
+- Values bound to a design token are `{"value": …, "token": "<file>#<group>.<member>"}`; the token is the same under every `--context`.
+- `instanceOf` identifies the source file and symbol for an instance, and `variant` the variant it uses.
+- Slot nodes include `slot: true`; non-slot nodes omit it.
 - `--depth` accepts `shallow`, `full`, or a non-negative integer budget through instance boundaries.
-- X-ray classifications are `standalone`, `inherited`, `locallyEdited`, and `locallyIntroduced`. Overlay suppression is `hiddenSelf`, `hiddenAncestor`, `invalidEntity`, or `null`.
 
 ### User-facing terminology
 
@@ -74,7 +72,7 @@ When adding or changing structure:
 - prefer importing shared components, tokens, and blocks
 - prefer stacks and `.auto` sizing for normal interface layout: `elyx man frame.layout`
 - keep overrides local and intentional
-- use `inspect` to read resolved structure and geometry before reasoning about instances or overrides
+- use `tree` to read resolved structure and geometry before reasoning about instances or overrides
 
 #### Canvas spacing
 
@@ -87,7 +85,7 @@ between them, rather than just 48px.
 
 The 20% target is a layout guideline, not a rigid constraint. Keep spacing
 consistent within groups and leave room for frame titles. Use resolved bounds
-from `elyx inspect` to check gaps and `elyx render` to review the arrangement.
+from `elyx find` to check gaps and `elyx render` to review the arrangement.
 This guidance is for separation between distinct canvas items, not padding or
 gaps inside a screen or component, or intentional overlaps. Do not re-space
 unrelated existing content unless asked.
@@ -113,11 +111,11 @@ rg -n --glob '*.elyx' '@context\s*\(' .    # discover context axes and values in
 elyx render path/to/file.elyx -o out.png
 elyx render path/to/file.elyx --context theme=dark -o out-dark.png
 elyx render path/to/file.elyx --context theme=dark --extra-file path/to/theme-dark.elyx -o out-dark.png
-elyx render path/to/file.elyx --symbol <name> --context theme=dark --context lang=pt -o out.png
+elyx render path/to/file.elyx --ref <name> --context theme=dark --context lang=pt -o out.png
 ```
 
 Use `render` whenever visual output matters. Do not assume a `.elyx` change is correct from source text alone.
 
-Use `--symbol <name>` to render one layer. Repeat `--context axis=value` to render with custom contexts without changing the source file. Repeat `--extra-file <file>` to load files that the rendered file does not import; a `--context` selection only changes the output once the file declaring that context is loaded, and without the matching `--extra-file` the render silently falls back to the default values. Search the workspace's `@context` annotations first to learn the available axes and values.
+Use `--ref <name>` to render one layer. Repeat `--context axis=value` to render with custom contexts without changing the source file. Repeat `--extra-file <file>` to load files that the rendered file does not import; a `--context` selection only changes the output once the file declaring that context is loaded, and without the matching `--extra-file` the render silently falls back to the default values. Search the workspace's `@context` annotations first to learn the available axes and values.
 
 `render` scale defaults to 1; add `--scale 2` only for fine detail because it produces 4x the pixels.

@@ -72,7 +72,7 @@ elyx --help
 ## How it works
 
 The base `elyx` skill teaches agents how to use `elyx man`, `elyx diagnostics`,
-`elyx inspect`, `elyx normalize`, and `elyx render`. The `elyx-code`
+`elyx find`, `elyx tree`, `elyx normalize`, and `elyx render`. The `elyx-code`
 skill adds translation guidance. Installing the skills provides agent guidance;
 installing `@elyx-design/cli` provides the binary that guidance uses.
 
