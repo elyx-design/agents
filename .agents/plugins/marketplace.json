@@ -7,8 +7,9 @@
     {
       "name": "elyx",
       "source": {
-        "source": "local",
-        "path": "./plugins/elyx"
+        "source": "npm",
+        "package": "@elyx-design/codex-plugin",
+        "version": "0.0.1-preview.16156.g8557f06bc"
       },
       "policy": {
         "installation": "AVAILABLE",

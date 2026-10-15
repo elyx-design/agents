@@ -1,123 +1,141 @@
 ---
 name: elyx
-description: Elyx is a design tool with local, AI-friendly `.elyx` files for screens, components, layouts, flows, and design systems. MANDATORY Use this skill before reading, reasoning about, or answering any question that touches Elyx or `.elyx` files — authoring, editing, validating, inspecting, reviewing, refactoring, comparing, or recommending changes, including read-only analysis where you produce no edit. Do not reason about `.elyx` from source text alone; imports, instances, overrides, and layout only resolve through the tools.
+description: Elyx is a design tool with local, AI-friendly `.elyx` files for screens, components, layouts, flows, and design systems. MANDATORY Use this skill before you read, reason about, or answer any question about Elyx or `.elyx` files. That includes authoring, editing, validating, inspecting, reviewing, refactoring, comparing, and recommending changes, and read-only analysis that produces no edit. Do not reason about `.elyx` files from source text alone. Imports, instances, overrides, and layout resolve only through the `elyx` CLI.
+metadata:
+  version: "0.0.1-preview.16156.g8557f06bc"
 ---
 
 ## How to work in Elyx
 
-This skill uses the public `@elyx-design/cli` npm package through its `elyx`
-command. Before working with Elyx files, confirm that `elyx` is available on
-`PATH` by running `elyx --help`. If it is unavailable, you could use `npx` or 
-ask the user to install it with:
+This skill uses the `elyx` command from the public `@elyx-design/cli` npm
+package. Before you work with Elyx files, run `elyx --version` to confirm that
+`elyx` is on your `PATH`. If it is not, ask the user to install it. For
+example:
 
 ```bash
 npm install --global @elyx-design/cli
 ```
 
-Run `elyx --help` or `elyx <subcommand> --help` for the authoritative flags.
+An old CLI can misread newer project files, such as `elyx.json`. Once per
+session, compare `elyx --version` with the newest release on the same channel
+(nightly, preview, or public) in `npm view @elyx-design/cli dist-tags`. If the
+CLI is behind, tell the user in one line and give them the install command for
+that release. If a CLI error mentions a project file and the CLI is behind,
+suggest the update before you work around the error. Ask before you install it
+yourself.
 
-### Use `inspect` to see the resolved scene
+For the authoritative list of flags, run `elyx --help` or `elyx <subcommand> --help`.
 
-Use `inspect` to understand the resolved scene after imports, instances, overrides, layout, and geometry have settled.
+### Use `find` and `tree` to see the resolved scene
 
-- `bounds`: resolve one exact layer ref to final layer data and bounds.
-  `elyx inspect bounds path/to/file.elyx --ref ctaButton`
+Use `find` and `tree` to read the scene after imports, instances, overrides, layout, and geometry resolve:
 
-- `hit`: find the topmost rendered layer at a board-space point.
-  `elyx inspect hit path/to/file.elyx --x 420 --y 180`
+- `find --ref`: get the final data and bounds of one layer by its exact ref.
+  `elyx find path/to/file.elyx --ref ctaButton`
 
-- `rect`: find layers intersecting or contained within a board-space rectangle.
-  `elyx inspect rect path/to/file.elyx --x 0 --y 0 --width 800 --height 600`
-  `elyx inspect rect path/to/file.elyx --x 0 --y 0 --width 800 --height 600 --mode contain --click-through`
+- `find --at`: get the topmost rendered layer at a board-space point.
+  `elyx find path/to/file.elyx --at 420,180`
 
-- `component`: resolve one internal source ref into a semantic component tree with children, instance source references, layout, position, constraints, text, and style.
-  `elyx inspect component path/to/file.elyx --ref OnboardingWelcome`
-  `elyx inspect component path/to/file.elyx --ref OnboardingWelcome --depth full`
+- `find --in`: get the layers that intersect a board-space rectangle, or that the rectangle contains.
+  `elyx find path/to/file.elyx --in 0,0,800,600`
+  `elyx find path/to/file.elyx --in 0,0,800,600 --contain --click-through`
 
-- `xray`: explain settled X-ray classifications, source counterparts, diff operations, target resolution, and hidden-overlay suppression. By default it returns locally edited and locally introduced layers. Add `--all` for inherited and standalone layers, or `--ref` to scope the traversal to one exact current-file layer ref.
-  `elyx inspect xray path/to/file.elyx`
-  `elyx inspect xray path/to/file.elyx --ref CardInstance --all`
+- `tree`: get the semantic layer tree of a file, or of one internal source ref, with children, instance source references, layout, position, constraints, text, and style.
+  `elyx tree path/to/file.elyx --ref OnboardingWelcome`
+  `elyx tree path/to/file.elyx --ref OnboardingWelcome --depth full`
 
-Key semantics:
+The results use these conventions:
 
-- `localBounds` are layer-local geometry; `absoluteBounds` are board-space geometry.
-- In `component` output, `position` is resolved local placement; `constraints` are stored layout-driving values.
-- `instanceOf` identifies the source file and symbol for an instance.
-- Slot nodes include `slot: true` and a `restrictChildren` boolean; non-slot nodes omit both fields.
-- `--depth` accepts `shallow`, `full`, or a non-negative integer budget through instance boundaries.
-- X-ray classifications are `standalone`, `inherited`, `locallyEdited`, and `locallyIntroduced`. Overlay suppression is `hiddenSelf`, `hiddenAncestor`, `invalidEntity`, or `null`.
+- `localBounds` is geometry in the layer's own space. `absoluteBounds` is geometry in board space.
+- In the tree, `position` is the resolved local placement. `constraints` are the stored values that drive layout.
+- A value bound to a design token appears as `{"value": …, "token": "<file>#<group>.<member>"}`. The token is the same in every context.
+- `instanceOf` gives an instance's source `file`, `symbol`, and `variant`.
+- Slot nodes include `slot: true`. Other nodes omit it.
+- The tree depth accepts `shallow`, `full`, or a non-negative integer. An integer limits how many instance boundaries the tree crosses.
 
-### User-facing terminology
+### Name things the way users do
 
-When describing or naming Elyx objects:
+When you describe or name Elyx objects, follow these rules:
 
-- Say “layer”, “component”, or “screen” for visual/design objects.
-- The declaration symbol before `=` is the layer’s name. Make its leaf name semantic, valid Elyx syntax, and consistent with the project; do not add a separate `name:` property.
-- Say “symbol” for source identity, imports, references, CLI arguments, and renames.
-- Rename symbols one source file at a time. Repair local references and all direct and transitive consumers before moving on.
-- Say “token” for design tokens. Use “variable” only for other reusable non-layer values.
+- Say “layer”, “component”, or “screen” for visual design objects.
+- The declaration symbol before `=` is the layer’s name. Keep its leaf name concise, semantic, valid Elyx syntax, and consistent with the project. Do not add a separate `name:` property.
+- Use the optional `title:` string for a human-readable label independent of the symbol. Keep the symbol stable when only the label changes.
+- Use the optional `caption:` string for a short explanation of a screen or example, such as its purpose or the state it demonstrates.
+- Say “symbol” for source identity, imports, references, arguments, and renames.
+- Say “token” for design tokens. Say “variable” only for other reusable values that are not layers.
 
 ### 1. Orient
 
-Use `elyx man` to learn Elyx syntax, concepts, properties, and component semantics before making assumptions from source examples. `elyx man` prints the overview manual, and `elyx man <topic-or-schema-path>` reads specific documentation such as `elyx man components`, `elyx man instance`, or `elyx man layer.width`. If the right query is unclear, use `elyx man --list`.
-
-The project usually already contains a design system and established file vocabulary. Reuse and import existing building blocks rather than hand-rolling a parallel system.
+Before you assume anything from source examples, use `elyx man` to learn Elyx syntax, concepts, properties, and component semantics. `elyx man` prints the overview manual. `elyx man <topic-or-schema-path>` prints one topic, such as `elyx man components`, `elyx man instance`, or `elyx man frame.width`. If you do not know the right path, run `elyx man --list`.
 
 ### 2. Author
 
-Prefer composition over raw recreation. Import and instantiate existing components rather than rebuilding raw layers.
-Use `elyx man project-structure` to learn how Elyx projects are organised.
-Use `elyx man components`, `elyx man instance`, `elyx man variants`, and `elyx man slots` to learn component composition and override semantics.
+The project usually already has a design system and its own file vocabulary.
+Reuse and import its existing building blocks. Do not build a parallel system.
 
-When adding or changing structure:
+Prefer composition to recreation. Import and instantiate existing components
+instead of rebuilding them from raw layers.
 
-- prefer importing shared components, tokens, and blocks
-- prefer stacks and `.auto` sizing for normal interface layout: `elyx man frame.layout`
-- keep overrides local and intentional
-- use `inspect` to read resolved structure and geometry before reasoning about instances or overrides
+To learn how Elyx projects are organized, run `elyx man project-structure`.
+To learn component composition and override semantics, run `elyx man components`, `elyx man instance`, `elyx man variants`, and `elyx man slots`.
 
-#### Canvas spacing
+When you add or change structure, follow these rules:
 
-When placing separate screens, frames, or component examples on a board, leave
-at least 48px of edge-to-edge space between adjacent items. Aim for a gap of at
-least 20% of the larger adjacent item’s size along the spacing direction: width
-for side-by-side items, height for vertically arranged items. For example, two
-1920px-wide screens placed side by side should have roughly 384px or more
-between them, rather than just 48px.
+- Before you write a property you have not used yet, read its documentation. Elyx ignores a property it does not know.
+- Import shared components, tokens, and blocks where you can.
+- Use stacks and `.auto` sizing for normal interface layout. The `frame.layout` documentation describes them.
+- Keep overrides local and intentional.
+- Add `title:` and `caption:` where they help explain top-level screens or component examples, not on every layer. Keep existing annotations unless the task calls for changing them.
+- Capture titles and captions semantically with `title:` and `caption:` so the canvas can draw them as annotations. Do not add separate text layers around a screen or example to represent its title or caption. Text that belongs inside the interface still uses text layers.
+- For icons and other vector artwork, write a small SVG file and import it as an asset. The `assets` documentation shows how, including tinting it with `fill`. Do not use Unicode symbols as icons, because the font may have no glyph for them.
+- Rename symbols one source file at a time. Before you move on, repair the local references and all direct and transitive consumers.
+- Before you reason about instances or overrides, read the resolved structure and geometry from the tree.
 
-The 20% target is a layout guideline, not a rigid constraint. Keep spacing
-consistent within groups and leave room for frame titles. Use resolved bounds
-from `elyx inspect` to check gaps and `elyx render` to review the arrangement.
-This guidance is for separation between distinct canvas items, not padding or
-gaps inside a screen or component, or intentional overlaps. Do not re-space
-unrelated existing content unless asked.
+#### Leave space between canvas items
 
-### 3. Check
+When you place separate screens, frames, or component examples on a board,
+leave at least 48px between the edges of adjacent items. Aim for a gap of at
+least 20% of the larger item’s size along the spacing direction. That is the
+width for items side by side, and the height for items stacked vertically. For
+example, two 1920px-wide screens side by side need about 384px or more between
+them, not 48px.
 
-```bash
-elyx normalize -w path/to/file.elyx  # normalize edited source in place
-elyx diagnostics path/to/file.elyx   # JSON report; no target = scan the project
-```
+The 20% target is a guideline, not a rigid rule. Keep spacing consistent
+within groups, and leave room for frame titles. To measure gaps, use the
+resolved bounds of the items. To review the arrangement, render it. This
+guidance covers the space between distinct canvas items. It does not cover
+padding or gaps inside a screen or component, or intentional overlaps. Do not
+re-space unrelated content unless the user asks.
 
-Run normalization after edits, then diagnostics. If `normalize` reports that it
-fell back to syntax-only formatting, mention that app-style normalization was not
-applied. If the task is broader than one file, run the smallest meaningful scope
-that still checks the changed area.
-
-Use `--editor-only` only to reproduce the diagnostics currently displayed in the editor or to isolate parser, evaluation, and import failures. It excludes validation lint and is not suitable for final validation. Final validation must use full diagnostics and resolve or explicitly account for every warning.
-
-### 4. See it
+### 3. Render the result
 
 ```bash
-rg -n --glob '*.elyx' '@context\s*\(' .    # discover context axes and values in the workspace
+rg -n --glob '*.elyx' '@context\s*\(' .    # find the context axes and values in the workspace
 elyx render path/to/file.elyx -o out.png
 elyx render path/to/file.elyx --context theme=dark -o out-dark.png
 elyx render path/to/file.elyx --context theme=dark --extra-file path/to/theme-dark.elyx -o out-dark.png
-elyx render path/to/file.elyx --symbol <name> --context theme=dark --context lang=pt -o out.png
+elyx render path/to/file.elyx --ref <name> --context theme=dark --context lang=pt -o out.png
 ```
 
-Use `render` whenever visual output matters. Do not assume a `.elyx` change is correct from source text alone.
+Use `render` whenever the visual result matters. Do not assume that a `.elyx` change is correct from its source text alone.
 
-Use `--symbol <name>` to render one layer. Repeat `--context axis=value` to render with custom contexts without changing the source file. Repeat `--extra-file <file>` to load files that the rendered file does not import; a `--context` selection only changes the output once the file declaring that context is loaded, and without the matching `--extra-file` the render silently falls back to the default values. Search the workspace's `@context` annotations first to learn the available axes and values.
+To render one layer, use `--ref <name>`. To render with custom contexts without changing the source file, repeat `--context axis=value`. To load files that the rendered file does not import, repeat `--extra-file <file>`. A `--context` selection changes the output only after the file that declares the context is loaded. Without the matching `--extra-file`, the render silently falls back to the default values. Before you render, search the workspace's `@context` annotations to learn the available axes and values.
 
-`render` scale defaults to 1; add `--scale 2` only for fine detail because it produces 4x the pixels.
+The `render` scale defaults to 1. Add `--scale 2` only for fine detail, because it produces four times the pixels.
+
+### 4. Check the changed files
+
+When your edits are done, normalize each changed file in place. Then check the
+changed files for errors and warnings.
+
+```bash
+elyx normalize -w path/to/file.elyx
+elyx diagnostics path/to/file.elyx   # with no target, checks the whole project
+```
+
+Check the smallest scope that covers the changed files. Resolve every warning,
+or account for it explicitly.
+
+If normalization reports that it fell back to syntax-only formatting, the file
+loaded with problems, so it was only formatted. Fix the problems it lists,
+then normalize the file again.
