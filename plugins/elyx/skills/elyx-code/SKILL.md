@@ -2,7 +2,7 @@
 name: elyx-code
 description: Translate between Elyx designs and web code. Use this skill to implement or update code from an Elyx design, to create or update an Elyx design from code, to import an existing app into Elyx, or to keep linked design and code in sync.
 metadata:
-  version: "0.0.1-preview.16226.g27552340d"
+  version: "0.0.1-preview.16301.g49cbeb6d6"
 ---
 
 # Elyx and code

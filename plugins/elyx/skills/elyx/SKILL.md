@@ -2,7 +2,7 @@
 name: elyx
 description: Elyx is a design tool with local, AI-friendly `.elyx` files for screens, components, layouts, flows, and design systems. MANDATORY Use this skill before you read, reason about, or answer any question about Elyx or `.elyx` files. That includes authoring, editing, validating, inspecting, reviewing, refactoring, comparing, and recommending changes, and read-only analysis that produces no edit. Do not reason about `.elyx` files from source text alone. Imports, instances, overrides, and layout resolve only through the `elyx` CLI.
 metadata:
-  version: "0.0.1-preview.16226.g27552340d"
+  version: "0.0.1-preview.16301.g49cbeb6d6"
 ---
 
 ## How to work in Elyx

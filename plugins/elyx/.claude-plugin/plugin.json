@@ -1,12 +1,12 @@
 {
   "name": "elyx",
-  "version": "0.0.1-preview.16226.g27552340d",
+  "version": "0.0.1-preview.16301.g49cbeb6d6",
   "description": "Guidance for agents working with .elyx design files.",
   "author": {
     "name": "Elyx",
     "email": "team@elyx.design"
   },
-  "homepage": "https://elyx.design",
+  "homepage": "https://elyx.design/",
   "repository": "https://github.com/elyx-design/agents",
   "keywords": [
     "elyx",

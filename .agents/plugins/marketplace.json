@@ -9,13 +9,39 @@
       "source": {
         "source": "npm",
         "package": "@elyx-design/codex-plugin",
-        "version": "0.0.1-preview.16226.g27552340d"
+        "version": "0.0.1-preview.16301.g49cbeb6d6"
       },
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL"
       },
-      "category": "Design"
+      "category": "Design",
+      "description": "Open Elyx design files as an interactive canvas, and work with them through the elyx CLI.",
+      "keywords": [
+        "elyx",
+        "design",
+        "ui",
+        "skills",
+        "cli"
+      ],
+      "interface": {
+        "displayName": "Elyx",
+        "shortDescription": "View and edit Elyx design files",
+        "longDescription": "Opens .elyx files as an Elyx canvas in the side panel, with pan and zoom, and teaches Codex to work with Elyx through the `elyx` CLI.",
+        "developerName": "Elyx",
+        "category": "Design",
+        "capabilities": [
+          "Interactive",
+          "Read",
+          "Write"
+        ],
+        "websiteURL": "https://elyx.design/",
+        "defaultPrompt": [
+          "Design a pricing section with three plan cards in Elyx.",
+          "Turn this Elyx design into a component in my codebase.",
+          "Add a dark mode to this Elyx design."
+        ]
+      }
     }
   ]
 }
