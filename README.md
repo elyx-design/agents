@@ -32,7 +32,14 @@ both `npm` and [Node.js](https://nodejs.org) 22 or later are on your login
 shell's `PATH`.
 
 Install the Elyx [plugin](https://learn.chatgpt.com/docs/plugins?surface=app)
-through the desktop app or from the command line:
+through the desktop app:
+
+1. Go the Plugins Tab
+2. Click Add > Add a marketplace
+3. Enter `elyx-design/agents` in the first field, leave the rest blank
+4. Then a "Personal" tab should appear from which you can install the Elyx plugin
+
+or from the command line:
 
 ```sh
 codex plugin marketplace add elyx-design/agents
