@@ -2,12 +2,12 @@
 name: elyx
 description: Elyx is a design tool with local, AI-friendly `.elyx` files for screens, components, layouts, flows, and design systems. MANDATORY Use this skill before you read, reason about, or answer any question about Elyx or `.elyx` files. That includes authoring, editing, validating, inspecting, reviewing, refactoring, comparing, and recommending changes, and read-only analysis that produces no edit. Do not reason about `.elyx` files from source text alone. Imports, instances, overrides, and layout resolve only through the `elyx` CLI.
 metadata:
-  version: "0.0.1-preview.16301.g49cbeb6d6"
+  version: "0.0.1-preview.16889.g86cc7388a1"
 ---
 
 ## How to work in Elyx
 
-This skill uses the `elyx` command from the public `@elyx-design/cli` npm
+This workflow uses the `elyx` command from the public `@elyx-design/cli` npm
 package. Before you work with Elyx files, run `elyx --version` to confirm that
 `elyx` is on your `PATH`. If it is not, ask the user to install it. For
 example:
@@ -16,13 +16,10 @@ example:
 npm install --global @elyx-design/cli
 ```
 
-An old CLI can misread newer project files, such as `elyx.json`. Once per
-session, compare `elyx --version` with the newest release on the same channel
-(nightly, preview, or public) in `npm view @elyx-design/cli dist-tags`. If the
-CLI is behind, tell the user in one line and give them the install command for
-that release. If a CLI error mentions a project file and the CLI is behind,
-suggest the update before you work around the error. Ask before you install it
-yourself.
+If a CLI error suggests the CLI is older than the project, such as an unknown
+field in `elyx.json`, tell the user in one line: update the Elyx app if
+`elyx` came with it, or update `@elyx-design/cli` if they installed it
+from npm.
 
 For the authoritative list of flags, run `elyx --help` or `elyx <subcommand> --help`.
 
@@ -50,8 +47,15 @@ The results use these conventions:
 - In the tree, `position` is the resolved local placement. `constraints` are the stored values that drive layout.
 - A value bound to a design token appears as `{"value": …, "token": "<file>#<group>.<member>"}`. The token is the same in every context.
 - `instanceOf` gives an instance's source `file`, `symbol`, and `variant`.
+- A code layer has `code` instead: the React component it renders, as `file` and `export`, and its `props`. The tree omits the layers it renders.
 - Slot nodes include `slot: true`. Other nodes omit it.
 - The tree depth accepts `shallow`, `full`, or a non-negative integer. An integer limits how many instance boundaries the tree crosses.
+
+### Start code from `css`
+
+When you implement a design in code, start from `elyx css` instead of recreating styles from `tree` output. It writes one class per rendered layer, with token references, stack layout, positioning, and clipping resolved. Add `--format json` to get each rule's declarations and the layer `target` it styles.
+
+`elyx css path/to/file.elyx --ref OnboardingWelcome`
 
 ### Name things the way users do
 
@@ -76,18 +80,25 @@ Reuse and import its existing building blocks. Do not build a parallel system.
 Prefer composition to recreation. Import and instantiate existing components
 instead of rebuilding them from raw layers.
 
+If the project has React components, code layers can place them on the
+canvas directly, so a design can start from what the codebase already has.
+Code layers are a work in progress. Read the `code-layers` documentation
+before you use them.
+
 To learn how Elyx projects are organized, run `elyx man project-structure`.
 To learn component composition and override semantics, run `elyx man components`, `elyx man instance`, `elyx man variants`, and `elyx man slots`.
+To learn how to place React components as code layers, run `elyx man code-layers`.
 
 When you add or change structure, follow these rules:
 
 - Before you write a property you have not used yet, read its documentation. Elyx ignores a property it does not know.
 - Import shared components, tokens, and blocks where you can.
+- When you create or link a variant, use `@variant` on an instance of its base. It already behaves as a component; do not enable the inspector's Component option (add `export`) just to make it a variant. Export it only when it needs to be reusable outside its file, such as an external variant offered in another file's variant picker.
 - Use stacks and `.auto` sizing for normal interface layout. The `frame.layout` documentation describes them.
 - Keep overrides local and intentional.
 - Add `title:` and `caption:` where they help explain top-level screens or component examples, not on every layer. Keep existing annotations unless the task calls for changing them.
 - Capture titles and captions semantically with `title:` and `caption:` so the canvas can draw them as annotations. Do not add separate text layers around a screen or example to represent its title or caption. Text that belongs inside the interface still uses text layers.
-- For icons and other vector artwork, write a small SVG file and import it as an asset. The `assets` documentation shows how, including tinting it with `fill`. Do not use Unicode symbols as icons, because the font may have no glyph for them.
+- For icons and other vector artwork, write a small SVG file and import it as an asset. The `assets` documentation shows how, including tinting it with `fill`. Do not substitute arbitrary Unicode characters for icons. For SF Symbols with a text representation, use the verified character and explicitly select a compatible SF font. Verify that it contains the glyph.
 - Rename symbols one source file at a time. Before you move on, repair the local references and all direct and transitive consumers.
 - Before you reason about instances or overrides, read the resolved structure and geometry from the tree.
 
@@ -111,15 +122,19 @@ re-space unrelated content unless the user asks.
 
 ```bash
 rg -n --glob '*.elyx' '@context\s*\(' .    # find the context axes and values in the workspace
-elyx render path/to/file.elyx -o out.png
-elyx render path/to/file.elyx --context theme=dark -o out-dark.png
-elyx render path/to/file.elyx --context theme=dark --extra-file path/to/theme-dark.elyx -o out-dark.png
-elyx render path/to/file.elyx --ref <name> --context theme=dark --context lang=pt -o out.png
+elyx render path/to/file.elyx -o <tmp>/out.png
+elyx render path/to/file.elyx --context theme=dark -o <tmp>/out-dark.png
+elyx render path/to/file.elyx --context theme=dark --extra-file path/to/theme-dark.elyx -o <tmp>/out-dark.png
+elyx render path/to/file.elyx --ref <name> --context theme=dark --context lang=pt -o <tmp>/out.png
 ```
 
 Use `render` whenever the visual result matters. Do not assume that a `.elyx` change is correct from its source text alone.
 
+A render is for you to look at, not part of your work. Write it to a temporary directory outside the repository, shown as `<tmp>` above, then view the PNG. Do not save renders in the project or commit them unless the user asked for the image files.
+
 To render one layer, use `--ref <name>`. To render with custom contexts without changing the source file, repeat `--context axis=value`. To load files that the rendered file does not import, repeat `--extra-file <file>`. A `--context` selection changes the output only after the file that declares the context is loaded. Without the matching `--extra-file`, the render silently falls back to the default values. Before you render, search the workspace's `@context` annotations to learn the available axes and values.
+
+When the file has code layers, `render` prints their render warnings to stderr, such as CSS that code layers don't support. Warnings aren't diagnostics. `elyx man code-layers` explains how to read them.
 
 The `render` scale defaults to 1. Add `--scale 2` only for fine detail, because it produces four times the pixels.
 

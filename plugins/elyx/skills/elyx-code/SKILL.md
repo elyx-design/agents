@@ -2,7 +2,7 @@
 name: elyx-code
 description: Translate between Elyx designs and web code. Use this skill to implement or update code from an Elyx design, to create or update an Elyx design from code, to import an existing app into Elyx, or to keep linked design and code in sync.
 metadata:
-  version: "0.0.1-preview.16301.g49cbeb6d6"
+  version: "0.0.1-preview.16889.g86cc7388a1"
 ---
 
 # Elyx and code
@@ -13,7 +13,7 @@ For Elyx inspection, language documentation, authoring, and validation, use the 
 
 - Identify the requested direction and scope: a component, a screen, a design system, or an app. For an update, inspect the changed side before you edit its counterpart, including its diff when one is available. Keep unrelated states and layers intact.
 - Look for existing `meta.code` links, code backlinks, component implementations, tokens, assets, and nearby examples. Treat a link as a lead to verify on both sides, not as proof that everything still matches.
-- For an existing Elyx target, run `elyx tree <file> --ref <ref> --depth shallow` and `elyx render <file> --ref <ref> -o out.png` with the relevant context. To see through instances, increase the tree depth. The tree shows inherited `meta` such as `meta.code`, token bindings, and `instanceOf` with its `variant`. Source text alone cannot show the final layout or overrides.
+- For an existing Elyx target, run `elyx tree <file> --ref <ref> --depth shallow` and `elyx render <file> --ref <ref> -o <tmp>/out.png` with the relevant context. To see through instances, increase the tree depth. The tree shows inherited `meta` such as `meta.code`, token bindings, and `instanceOf` with its `variant`. Source text alone cannot show the final layout or overrides.
 - To inspect or render a descendant inside an instance, reuse a non-null `target` from `find` or `tree` output. Pass its `filePath` as the input file, its `sourceRef` as `--ref`, and its `overridePath`, when present, as `--override-path`. Do not infer an instance occurrence from its display path.
 - For feedback on the code side, look in the repo's scripts, docs, and nearby stories for an existing route, preview, or component harness that shows the relevant state. If one is practical to use, compare appearance and behavior with the browser or component tools you have. Accessibility and computed-style feedback can explain what a screenshot cannot. Do not add a browser dependency only for this step. If you cannot inspect the running code, work from source and the existing project checks, and say what you could not observe.
 
@@ -43,7 +43,9 @@ Use these analogies as a starting point. Then follow the target framework and th
 ## From code to Elyx
 
 - Before you create Elyx tokens, components, contexts, or links, inventory the relevant existing ones. Reuse them where they express the code's roles and structure. When you import a design system, set up the shared tokens and theme contexts before you bind components to them. Preserve the code's base and semantic token layers and its resolved lengths. Verify that representative aliases resolve in each theme.
+- To see a React codebase's components in Elyx without redrawing them, place them as code layers: import the module and set `props:`. Code layers are a work in progress, and their rendered contents can't be edited. Redraw a component as Elyx layers when the design needs to change it. The `code-layers` documentation covers the root component, `*.elyx.tsx` entry files, and the limits. A codebase may need setup first: running its CSS build, such as Tailwind or StyleX, and importing the output from the root component; providers in the root; and entry files for compound components and for props that aren't text, numbers, booleans or enums. `elyx man code-layers` lists what to check.
 - Use components for reused controls, variants for meaningful differences, slots for composable regions, and instances for screen composition. Use stacks for normal UI flow, and freeform placement for intentional overlap or canvas arrangement.
+- For named SF Symbol references, resolve the name to its text character. Do not guess code points. If the character cannot be resolved or a compatible font is unavailable, report the limitation.
 - Represent one specific, valid UI state. For conditional or data-driven UI, choose representative states. Do not combine branches into a screen that the app cannot show. Capture theme, language, and responsive differences with the project's existing conventions, and with Elyx contexts or variants where they fit.
 - When the code has a meaningful flow between represented screens, panels, or states, put a connection on the source control, and target the corresponding Elyx layer. For example, after you import `"./checkout.elyx" as Checkout`, a continue button can use `connections: {target: Checkout.paymentScreen}`. Keep destinations as references, including across files. To see the whole flow at once, use an overview with `draw-connections: .true`.
 - For an update, edit the linked declaration or instance that corresponds to the code change. Preserve the shared component and the other instances, unless the code change affects them too.
