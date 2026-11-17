@@ -9,7 +9,7 @@
       "source": {
         "source": "npm",
         "package": "@elyx-design/codex-plugin",
-        "version": "0.0.1-preview.16889.g86cc7388a1"
+        "version": "0.0.1-preview.18273.g1dbfdb598f"
       },
       "policy": {
         "installation": "AVAILABLE",

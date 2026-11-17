@@ -2,7 +2,7 @@
 name: elyx-code
 description: Translate between Elyx designs and web code. Use this skill to implement or update code from an Elyx design, to create or update an Elyx design from code, to import an existing app into Elyx, or to keep linked design and code in sync.
 metadata:
-  version: "0.0.1-preview.16889.g86cc7388a1"
+  version: "0.0.1-preview.18273.g1dbfdb598f"
 ---
 
 # Elyx and code
@@ -23,9 +23,10 @@ Use these analogies as a starting point. Then follow the target framework and th
 
 | Elyx | Web code analogy | Check |
 | --- | --- | --- |
-| Stack `layout: {direction: .row, item-gap: 8px}` | `display: flex; flex-direction: row; gap: 8px` | Preserve order, alignment, wrapping, and responsive behavior. Nested stacks or a grid may fit the code better. |
+| Stack `layout: {stack: {direction: .row, item-gap: 8px}}` | `display: flex; flex-direction: row; gap: 8px` | Preserve order, alignment, wrapping, and responsive behavior. Nested stacks or a grid may fit the code better. |
+| Grid `layout: {grid: {columns: [1fr, 2fr], column-gap: 8px}}` | `display: grid; grid-template-columns: 1fr 2fr; column-gap: 8px` | Grid properties match CSS grid, with fixed axes. `flow` is `grid-auto-flow`. |
 | Freeform children with `left` and `top` | A `position: relative` parent and `position: absolute` children for intentional overlap | Coordinates are relative to the parent. Canvas placement does not need to become app positioning. |
-| `.auto`, percentages, `overflow` | Intrinsic sizing, parent-relative percentages, CSS overflow | Elyx clips by default. CSS overflow defaults to visible. A freeform frame without a size can collapse. |
+| `.auto`, percentages, `overflow` | Intrinsic sizing, parent-relative percentages, CSS overflow | Like CSS, an Elyx frame shows overflowing content unless it sets `overflow: .clip`. A freeform frame without a size can collapse. |
 | Tokens | CSS custom properties, Tailwind theme tokens, or the project's token system | Preserve roles, aliases, and units. |
 | `@context` | Theme selectors, locale state, or responsive breakpoints | Inspect which tokens or structural variants change in that context. |
 | Component instance (`frame : source`) | A component call, such as `<Card />` | Instance overrides become values that are passed or composed at that use site, not a copied implementation. |
@@ -43,7 +44,7 @@ Use these analogies as a starting point. Then follow the target framework and th
 ## From code to Elyx
 
 - Before you create Elyx tokens, components, contexts, or links, inventory the relevant existing ones. Reuse them where they express the code's roles and structure. When you import a design system, set up the shared tokens and theme contexts before you bind components to them. Preserve the code's base and semantic token layers and its resolved lengths. Verify that representative aliases resolve in each theme.
-- To see a React codebase's components in Elyx without redrawing them, place them as code layers: import the module and set `props:`. Code layers are a work in progress, and their rendered contents can't be edited. Redraw a component as Elyx layers when the design needs to change it. The `code-layers` documentation covers the root component, `*.elyx.tsx` entry files, and the limits. A codebase may need setup first: running its CSS build, such as Tailwind or StyleX, and importing the output from the root component; providers in the root; and entry files for compound components and for props that aren't text, numbers, booleans or enums. `elyx man code-layers` lists what to check.
+- To see a React codebase's components, run `elyx code preview Module.tsx`. You get an image per exported component, with each one's status, size, props schema, and render diagnostics, and you need no dev server, Storybook, or custom harness. A preview is reference material. To make a component's Elyx version, convert it with `elyx code convert Module.tsx#Export -o <dir>` rather than recreate its layers by hand. The source it writes claims the component with `meta.code`, and uses the project's tokens where the CSS reads them. A conversion is a first version of the component: it makes slots for the content it takes, variants for the props you name, and instances of the components the project already converted, so convert those first. Render the source to check it, then finish what the report lists, such as variants that add or remove layers. The `code` documentation explains what a conversion is for and the order to convert in, and covers the root component, `--tsx`, and the limits. A codebase may need setup first. Run its CSS build, such as Tailwind or StyleX, and import the output from the root component, which `elyx.root` in the package's `package.json` names. A component that throws for a missing provider needs that provider in the root, not in each render.
 - Use components for reused controls, variants for meaningful differences, slots for composable regions, and instances for screen composition. Use stacks for normal UI flow, and freeform placement for intentional overlap or canvas arrangement.
 - For named SF Symbol references, resolve the name to its text character. Do not guess code points. If the character cannot be resolved or a compatible font is unavailable, report the limitation.
 - Represent one specific, valid UI state. For conditional or data-driven UI, choose representative states. Do not combine branches into a screen that the app cannot show. Capture theme, language, and responsive differences with the project's existing conventions, and with Elyx contexts or variants where they fit.
@@ -78,7 +79,7 @@ If only that call site changes, update `starterCard`. If the component default c
 Watch for these differences:
 
 - A stacked child ignores `left` and `top`.
-- When content intentionally extends beyond a frame, such as a shadow, use `overflow: .visible` in Elyx.
+- CSS `overflow: hidden` becomes `overflow: .clip` in Elyx. Without it, an Elyx frame lets shadows and overflowing children show, as CSS does.
 - Elyx text `letter-spacing` is a percentage of the font size. A positive `line-height` is a multiplier, and `0` means automatic.
 - An Elyx variant is an instance of its base with overrides. `@context` selects alternate tokens or contextual variants. By itself, it does not define a web breakpoint or a component prop.
 
