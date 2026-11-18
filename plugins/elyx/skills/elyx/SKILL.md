@@ -2,7 +2,7 @@
 name: elyx
 description: Elyx is a design tool with local, AI-friendly `.elyx` files for screens, components, layouts, flows, and design systems. MANDATORY Use this skill before you read, reason about, or answer any question about Elyx or `.elyx` files. That includes authoring, editing, validating, inspecting, reviewing, refactoring, comparing, and recommending changes, and read-only analysis that produces no edit. Do not reason about `.elyx` files from source text alone. Imports, instances, overrides, and layout resolve only through the `elyx` CLI.
 metadata:
-  version: "0.0.1-preview.18273.g1dbfdb598f"
+  version: "0.0.1-preview.18387.gaf2f8cf85d"
 ---
 
 ## How to work in Elyx
@@ -49,7 +49,6 @@ The results use these conventions:
 - In the tree, `position` is the resolved local placement. `constraints` are the stored values that drive layout.
 - A value bound to a design token appears as `{"value": …, "token": "<file>#<group>.<member>"}`. The token is the same in every context.
 - `instanceOf` gives an instance's source `file`, `symbol`, and `variant`.
-- Slot nodes include `slot: true`. Other nodes omit it.
 - The tree depth accepts `shallow`, `full`, or a non-negative integer. An integer limits how many instance boundaries the tree crosses.
 
 ### Start code from `css`
@@ -89,7 +88,7 @@ already has. You can also convert one into an Elyx source that claims it. The
 `code` documentation covers the setup.
 
 To learn how Elyx projects are organized, run `elyx man project-structure`.
-To learn component composition and override semantics, run `elyx man components`, `elyx man instance`, `elyx man variants`, and `elyx man slots`.
+To learn component composition and override semantics, run `elyx man components`, `elyx man instance`, and `elyx man variants`.
 To learn what converting React components is for, and how to set up, preview, and convert them, run `elyx man code`.
 
 When you add or change structure, follow these rules:
@@ -140,7 +139,7 @@ To preview a React module's components, run `elyx code preview path/to/Module.ts
 
 To start an Elyx component from a React one, run `elyx code convert path/to/Module.tsx#Export -o <dir>`, where `<dir>` is a folder in the Elyx project. It creates the folder if it's missing, and never overwrites a file. It writes one new `.elyx` file, made from one render, whose exported declaration claims the component with `meta.code`. Read these fields of its report:
 
-- `slots`: `children` becomes a slot, and so does a prop of kind `node` that's required, given, or has a default, if the component renders it. Each slot holds styled example text to replace.
+- `contentFrames`: `children` becomes an empty frame, and so does a prop of kind `node` that's required, given, or has a default, if the component renders it. Instances insert their content into it.
 - `filled`: the props that have no default and were filled. A string is filled with its name. A required array or object is filled with sample data from its type, where `$elyxSample` marks a function or a component that does nothing. Replace sample content the design doesn't want.
 - `variants`: with `--variant-prop name`, repeated for each enum or boolean prop to vary, each other value of those props, as a variant of the source overriding what it renders differently, or why it isn't one, such as a value that adds or removes layers. When more than one prop makes variants, their values combine, each combination a variant, on a labelled grid; `variantsNotCombined` says when there would be too many.
 - `instances`: the components it renders that a source in the project already claims, each now an instance of that source, or why it keeps its layers. Convert nested components first to get these.
